@@ -75,11 +75,11 @@ add2virtualenv ~/allfiles/htdocs/$1_repo/$1
 # Need to change the secret key: generate a random secret_key and add it to the virtual environment: http://techblog.leosoto.com/django-secretkey-generation/
 secret_key=$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.letters) for i in range(100)])')
 echo "export SECRET_KEY='$secret_key'" >> $WORKON_HOME/$1_venv/bin/activate
-databases_default_name=b$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.letters) for i in range(50)])')
+databases_default_name=b$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.lowercase) for i in range(50)])')
 echo "export databases_default_name='$databases_default_name'" >> $WORKON_HOME/$1_venv/bin/activate
 databases_default_user=h$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.lowercase) for i in range(50)])')
 echo "export databases_default_user='$databases_default_user'" >> $WORKON_HOME/$1_venv/bin/activate
-databases_default_password=$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.letters) for i in range(50)])')
+databases_default_password=l$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.lowercase) for i in range(50)])')
 echo "export databases_default_password='$databases_default_password'" >> $WORKON_HOME/$1_venv/bin/activate
 
 echo "secret_key:$secret_key"
@@ -115,6 +115,10 @@ pip install -r requirements/local.txt
 echo "--------------- DONE: Installing the other requirements -----------------------------------------------------------"
 
 echo "--------------- Copying some templates -----------------------------------------------------------"
+echo "################ copy the base.html template"
+rm $1_repo/$1/templates/base.html
+wget -c -P $1_repo/$1/templates/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/base.html
+
 echo "--------------- DONE: Copying some templates -----------------------------------------------------------"
 
 echo "repo:"
@@ -132,6 +136,7 @@ echo " "
 echo "----------------------------------------------------------------"
 echo "1. Create database with this info:"
 echo "databases_default_name:$databases_default_name"
+createdb $databases_default_name
 echo "databases_default_user:$databases_default_user"
 echo "databases_default_password:$databases_default_password"
 echo " "
@@ -142,7 +147,13 @@ echo "CREATE USER $databases_default_user WITH PASSWORD '$databases_default_pass
 echo "GRANT ALL PRIVILEGES ON DATABASE $databases_default_name to $databases_default_user;"
 echo " "
 echo "----------------------------------------------------------------"
-echo "2. Use vagrant to spin up a development environment:"
+echo "2. Synchronize and migrate the database:"
+echo "django-admin.py syncdb --settings=$1.settings.local"
+echo "django-admin.py migrate --settings=$1.settings.local"
+echo "django-admin.py runserver 8000 --settings=$1.settings.local"
+echo " "
+echo "----------------------------------------------------------------"
+echo "3. Use vagrant to spin up a development environment:"
 echo " "
 
 
