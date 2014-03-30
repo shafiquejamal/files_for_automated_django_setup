@@ -70,7 +70,7 @@ wget -c -P $1_repo/$1/$1/settings/ https://raw.github.com/shafiquejamal/files_fo
 echo "################ create a 'core' app"
 cd $1_repo/$1 # This gets us into the project directory, where the apps should be placed
 django-admin.py startapp core
-cd .. # lets stay in the _repo directory by default
+cd ../../ # lets stay in the _repo directory by default
 add2virtualenv ~/allfiles/htdocs/$1_repo/$1
 # Need to change the secret key: generate a random secret_key and add it to the virtual environment: http://techblog.leosoto.com/django-secretkey-generation/
 secret_key=$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.letters) for i in range(100)])')
@@ -108,10 +108,10 @@ echo "--------------- Installing the other requirements ------------------------
 #
 #
 #
-echo "psycopg2==2.5.2" >> requirements/base.txt
-echo "django-extensions" >> requirements/base.txt
-echo "django-sslify" >> requirements/base.txt
-pip install -r requirements/local.txt
+echo "psycopg2==2.5.2" >> $1_repo/requirements/base.txt
+echo "django-extensions" >> $1_repo/requirements/base.txt
+echo "django-sslify" >> $1_repo/requirements/base.txt
+pip install -r $1_repo/requirements/local.txt
 echo "--------------- DONE: Installing the other requirements -----------------------------------------------------------"
 
 echo "--------------- Copying some templates -----------------------------------------------------------"
@@ -122,11 +122,11 @@ wget -c -P $1_repo/$1/templates/ https://raw.github.com/shafiquejamal/files_for_
 echo "--------------- DONE: Copying some templates -----------------------------------------------------------"
 
 echo "repo:"
-ls -al 
+ls -al $1_repo/
 echo "project:"
-ls -al $1
+ls -al $1_repo/$1/
 echo "config:"
-ls -al $1/$1
+ls -al $1_repo/$1/$1/
 
 
 echo "****************************************************************"
