@@ -79,9 +79,9 @@ DATABASES = {
         'ATOMIC_REQUESTS' : True,
     }
 }
-DATABASES['NAME'] = get_env_setting("databases_default_name") 
-DATABASES['USER'] = get_env_setting("databases_default_user") 
-DATABASES['PASSWORD'] = get_env_setting("databases_default_password") 
+DATABASES['default']['NAME'] = get_env_setting("databases_default_name") 
+DATABASES['default']['USER'] = get_env_setting("databases_default_user") 
+DATABASES['default']['PASSWORD'] = get_env_setting("databases_default_password") 
 ########## END DATABASE CONFIGURATION
 
 
