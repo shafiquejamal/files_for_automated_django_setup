@@ -57,6 +57,16 @@ django-admin.py startproject --template=https://github.com/twoscoops/django-twos
 echo "################ project created, now rename to top level to $1_repo"
 cp -r $1 $1_repo
 rm -R $1
+echo "################ Get rid of initial settings files and replace them with my own"
+rm $1_repo/$1/$1/settings/*.pyc 
+rm $1_repo/$1/$1/settings/base.py 
+rm $1_repo/$1/$1/settings/local.py 
+rm $1_repo/$1/$1/settings/production.py 
+rm $1_repo/$1/$1/settings/test.py 
+wget -c -P $1_repo/$1/$1/settings/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/base.py 
+wget -c -P $1_repo/$1/$1/settings/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/local.py
+wget -c -P $1_repo/$1/$1/settings/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/production.py
+wget -c -P $1_repo/$1/$1/settings/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/test.py
 echo "################ create a 'core' app"
 cd $1_repo/$1 # This gets us into the project directory, where the apps should be placed
 django-admin.py startapp core
@@ -109,8 +119,20 @@ ls -al $1
 echo "config:"
 ls -al $1/$1
 
-echo "Create database with this info:"
+
+echo "****************************************************************"
+echo "* Now do the following:										 *"
+echo "****************************************************************"
+echo " "
+echo "----------------------------------------------------------------"
+echo "1. Create database with this info:"
 echo "databases_default_name:$databases_default_name"
 echo "databases_default_user:$databases_default_user"
 echo "databases_default_password:$databases_default_password"
+echo " "
+echo "----------------------------------------------------------------"
+echo "2. Use vagrant to spin up a development environment:"
+echo " "
+
+
 

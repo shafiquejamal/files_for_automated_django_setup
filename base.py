@@ -138,7 +138,7 @@ STATICFILES_FINDERS = (
 ########## SECRET CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 # Note: This key should only be used for development and testing.
-SECRET_KEY = get_env_variable('SECRET_KEY') #r"_u%b2tlm%!$h6hvz#sn%@ubg(*f_%in_@1v6@esr&ivb8iy6i*"
+SECRET_KEY = get_env_setting('SECRET_KEY') #r"_u%b2tlm%!$h6hvz#sn%@ubg(*f_%in_@1v6@esr&ivb8iy6i*"
 ########## END SECRET CONFIGURATION
 
 
