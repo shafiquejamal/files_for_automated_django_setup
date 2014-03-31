@@ -149,6 +149,7 @@ echo "config:"
 ls -al $1_repo/$1/$1/
 
 
+echo ""
 echo "****************************************************************"
 echo "* Now do the following:										 *"
 echo "****************************************************************"
@@ -177,10 +178,29 @@ new_admin_url=$(python -c 'import random; import string; print "".join([random.S
 echo "3. Change the admin URL from r'^admin/' to something r'^$new_admin_url/'" 
 echo " "
 echo " "
-echo " "
 echo "----------------------------------------------------------------"
 echo "4. Use vagrant to spin up a development environment:"
 echo " "
+echo "****************************************************************"
+echo ""
+echo "The skeleton repository is now set up. Here is what happens next:"
+echo ""
+echo " You will develop on you HOST machine, but files will be"
+echo "		served from the GUEST machine. You just need to create"
+echo "		a virtual environment on the GUEST machine and install"
+echo "		the requirements in that virutal environment, then link"
+echo "		to that virtual environment in the mysite_wsgi.ini file"
+echo ""
+echo " A. $ vagrant ssh 																	# access the guest machine"
+echo " B. $ mkvirtualenv mysite_venv 														# on the guest"
+echo " C. $ 																				# on the guest"
+echo " D. $ pip install -r /vagrant/requirements/local.txt'									# on the guest"
+echo " E. Create the database, role, and grant priviliges   								# on the guest"
+echo " F. On the GUEST machine, simlink to the site in the project directory located on the host machine:"
+echo "		sudo ln -s /vagrant/nginx.conf /etc/nginx/sites-enabled/   	# on the guest"
+echo "		sudo ln -s /vagrant/uwsgi.ini /etc/uwsgi/vassals/			# on the guest"
+echo ""
+echo ""
 
 
 
