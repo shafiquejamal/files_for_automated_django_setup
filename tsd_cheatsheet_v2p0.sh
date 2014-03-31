@@ -75,11 +75,11 @@ add2virtualenv ~/allfiles/htdocs/$1_repo/$1
 # Need to change the secret key: generate a random secret_key and add it to the virtual environment: http://techblog.leosoto.com/django-secretkey-generation/
 secret_key=$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.letters) for i in range(100)])')
 echo "export SECRET_KEY='$secret_key'" >> $WORKON_HOME/$1_venv/bin/activate
-databases_default_name=b$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.lowercase) for i in range(50)])')
+databases_default_name=db_name # b$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.lowercase) for i in range(50)])')
 echo "export databases_default_name='$databases_default_name'" >> $WORKON_HOME/$1_venv/bin/activate
-databases_default_user=h$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.lowercase) for i in range(50)])')
+databases_default_user=db_user # h$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.lowercase) for i in range(50)])')
 echo "export databases_default_user='$databases_default_user'" >> $WORKON_HOME/$1_venv/bin/activate
-databases_default_password=l$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.lowercase) for i in range(50)])')
+databases_default_password=db_password # l$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.lowercase) for i in range(50)])')
 echo "export databases_default_password='$databases_default_password'" >> $WORKON_HOME/$1_venv/bin/activate
 
 echo "secret_key:$secret_key"
@@ -114,12 +114,32 @@ echo "django-sslify" >> $1_repo/requirements/base.txt
 pip install -r $1_repo/requirements/local.txt
 echo "--------------- DONE: Installing the other requirements -----------------------------------------------------------"
 
-echo "--------------- Copying some templates -----------------------------------------------------------"
+echo "--------------- Copying some templates, vagrant file, cheffile -----------------------------------------------------------"
 echo "################ copy the base.html template"
 rm $1_repo/$1/templates/base.html
 wget -c -P $1_repo/$1/templates/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/base.html
+wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/Cheffile
+wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/Vagrantfile
+wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/mysite_uwsgi.ini
+wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/mysite_nginx.conf
+echo "--------------- DONE: Copying some templates, vagrant file, cheffile  ----------------------------------------------------"
 
-echo "--------------- DONE: Copying some templates -----------------------------------------------------------"
+echo "--------------- Use vagrant to spin up the local development server ------------------------------------------------------"
+cd $1_repo
+librarian-chef install
+vagrant up
+cd ..
+echo "--------------- DONE: Use vagrant to spin up the local development server ------------------------------------------------------"
+
+echo "--------------- Creating SSL certificates ------------------------------------------------------"
+cd $1_repo/
+openssl genrsa -out server.key 2048
+# openssl req -new -key server.key -out server.csr
+openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=localhost" -keyout server.key  -out server.crt
+# openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+cd ..
+echo "--------------- DONE: Creating SSL certificates ------------------------------------------------------"
+
 
 echo "repo:"
 ls -al $1_repo/
@@ -136,13 +156,13 @@ echo " "
 echo "----------------------------------------------------------------"
 echo "1. Create database with this info:"
 echo "databases_default_name:$databases_default_name"
-createdb $databases_default_name
 echo "databases_default_user:$databases_default_user"
 echo "databases_default_password:$databases_default_password"
 echo " "
 echo "Here are the commands: "
 echo "psql -h localhost "
 echo "CREATE DATABASE $databases_default_name;"
+createdb $databases_default_name
 echo "CREATE USER $databases_default_user WITH PASSWORD '$databases_default_password';"
 echo "GRANT ALL PRIVILEGES ON DATABASE $databases_default_name to $databases_default_user;"
 echo " "
@@ -153,7 +173,13 @@ echo "django-admin.py migrate --settings=$1.settings.local"
 echo "django-admin.py runserver 8000 --settings=$1.settings.local"
 echo " "
 echo "----------------------------------------------------------------"
-echo "3. Use vagrant to spin up a development environment:"
+new_admin_url=$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.lowercase) for i in range(20)])')
+echo "3. Change the admin URL from r'^admin/' to something r'^$new_admin_url/'" 
+echo " "
+echo " "
+echo " "
+echo "----------------------------------------------------------------"
+echo "4. Use vagrant to spin up a development environment:"
 echo " "
 
 
