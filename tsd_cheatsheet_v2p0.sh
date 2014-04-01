@@ -117,7 +117,7 @@ pip install -r $1_repo/requirements/local.txt
 echo "--------------- DONE: Installing the other requirements -----------------------------------------------------------"
 
 echo "--------------- Copying some templates, vagrant file, cheffile -----------------------------------------------------------"
-echo "################ copy the base.html template"
+echo "################ copy the base.html template, and download the vagrant, ngnix and uswsgi files"
 rm $1_repo/$1/templates/base.html
 wget -c -P $1_repo/$1/templates/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/base.html
 wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/Cheffile
@@ -125,6 +125,14 @@ wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_dja
 wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/uwsgi.ini
 wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/nginx.conf
 wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/uwsgi_params
+sed -i "" "s/mysite/$1/g" $1_repo/nginx.conf
+sed -i "" "s/mysite/$1/g" $1_repo/uwsgi.ini
+
+echo "env = databases_default_name=$db_name" >> $1_repo/uwsgi.ini
+echo "env = databases_default_user=$db_user" >> $1_repo/uwsgi.ini
+echo "env = databases_default_password=$db_password" >> $1_repo/uwsgi.ini
+echo "env = SECRET_KEY=$secret_key" >> $1_repo/uwsgi.ini
+
 echo "--------------- DONE: Copying some templates, vagrant file, cheffile  ----------------------------------------------------"
 
 echo "--------------- Use vagrant to spin up the local development server ------------------------------------------------------"
@@ -191,19 +199,22 @@ echo ""
 echo " You will develop on you HOST machine, but files will be"
 echo "		served from the GUEST machine. You just need to create"
 echo "		a virtual environment on the GUEST machine and install"
-echo "		the requirements in that virutal environment, then link"
-echo "		to that virtual environment in the mysite_wsgi.ini file"
+echo "		the requirements in that virutal environment. You then "
+echo "		need to restart nginx and run uwsgi on the GUEST. Here "
+echo "		are the commands that you should run:"
 echo ""
-echo " A. $ vagrant ssh 																	# access the guest machine"
+echo "JUST THE FIRST TIME:"
+echo " A. $ vagrant ssh 																	# on the host, to access the guest machine"
 echo " B. $ mkvirtualenv mysite_venv 														# on the guest"
-echo " C. $ 																				# on the guest"
-echo " D. $ pip install -r /vagrant/requirements/local.txt'									# on the guest"
-echo " E. Create the database, role, and grant priviliges   								# on the guest"
-echo " F. On the GUEST machine, simlink to the site in the project directory located on the host machine:"
-echo "		sudo ln -s /vagrant/nginx.conf /etc/nginx/sites-enabled/   	# on the guest"
-echo "		sudo ln -s /vagrant/uwsgi.ini /etc/uwsgi/vassals/			# on the guest"
+echo " C. $ pip install -r /vagrant/requirements/local.txt'									# on the guest"
+echo " E. $ sudo -u postgres psq #Create the database, role, and grant priviliges   		# on the guest"
 echo ""
+echo "EACH TIME:"
+echo " F. $ sudo /etc/init.d/nginx restart													# on the guest"
+echo " G. $ sudo uwsgi --emperor /etc/uwsgi/vassals --uid vagrant --gid vagrant		   		# on the guest"
+echo "			# on the guest"
 echo ""
-
+echo "Your site should now be available at: https://localhost:8443"
+echo ""
 
 

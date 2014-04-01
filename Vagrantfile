@@ -6,10 +6,13 @@
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "opscode-ubuntu-12.04_chef-11.4.0"
-  config.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_chef-11.4.0.box"
-  config.vm.network :forwarded_port, host: 80, guest: 80
-  config.vm.network :forwarded_port, host: 443, guest: 443
+  # config.vm.box = "opscode-ubuntu-12.04_chef-11.4.0"
+  config.vm.box = "shafiquejamal/nginx-uwsgi-django_02April2014"
+  # config.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_chef-11.4.0.box"
+  config.vm.box_url = "https://vagrantcloud.com/shafiquejamal/nginx-uwsgi-django_02April2014/version/1/provider/aws.box"
+
+  config.vm.network :forwarded_port, host: 8000, guest: 80
+  config.vm.network :forwarded_port, host: 8443, guest: 443
   config.ssh.forward_agent = true
 
   config.vm.provision :chef_solo do |chef|
