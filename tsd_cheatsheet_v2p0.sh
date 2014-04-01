@@ -77,11 +77,11 @@ add2virtualenv ~/allfiles/htdocs/$1_repo/$1
 # Need to change the secret key: generate a random secret_key and add it to the virtual environment: http://techblog.leosoto.com/django-secretkey-generation/
 secret_key=$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.letters) for i in range(100)])')
 echo "export SECRET_KEY='$secret_key'" >> $WORKON_HOME/$1_venv/bin/activate
-databases_default_name=db_name # b$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.lowercase) for i in range(50)])')
+databases_default_name=b$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.lowercase) for i in range(50)])')
 echo "export databases_default_name='$databases_default_name'" >> $WORKON_HOME/$1_venv/bin/activate
-databases_default_user=db_user # h$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.lowercase) for i in range(50)])')
+databases_default_user=h$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.lowercase) for i in range(50)])')
 echo "export databases_default_user='$databases_default_user'" >> $WORKON_HOME/$1_venv/bin/activate
-databases_default_password=db_password # l$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.lowercase) for i in range(50)])')
+databases_default_password=l$(python -c 'import random; import string; print "".join([random.SystemRandom().choice(string.digits + string.lowercase) for i in range(50)])')
 echo "export databases_default_password='$databases_default_password'" >> $WORKON_HOME/$1_venv/bin/activate
 
 echo "secret_key:$secret_key"
@@ -127,10 +127,11 @@ wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_dja
 wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/uwsgi_params
 sed -i "" "s/mysite/$1/g" $1_repo/nginx.conf
 sed -i "" "s/mysite/$1/g" $1_repo/uwsgi.ini
+sed -i "" "s/settings\.production/settings\.local/g" $1_repo/$1/$1/wsgi.py
 
-echo "env = databases_default_name=$db_name" >> $1_repo/uwsgi.ini
-echo "env = databases_default_user=$db_user" >> $1_repo/uwsgi.ini
-echo "env = databases_default_password=$db_password" >> $1_repo/uwsgi.ini
+echo "env = databases_default_name=$databases_default_name" >> $1_repo/uwsgi.ini
+echo "env = databases_default_user=$databases_default_user" >> $1_repo/uwsgi.ini
+echo "env = databases_default_password=$databases_default_password" >> $1_repo/uwsgi.ini
 echo "env = SECRET_KEY=$secret_key" >> $1_repo/uwsgi.ini
 
 echo "--------------- DONE: Copying some templates, vagrant file, cheffile  ----------------------------------------------------"
@@ -204,14 +205,14 @@ echo "		need to restart nginx and run uwsgi on the GUEST. Here "
 echo "		are the commands that you should run:"
 echo ""
 echo "JUST THE FIRST TIME:"
-echo " A. $ vagrant ssh 																	# on the host, to access the guest machine"
-echo " B. $ mkvirtualenv mysite_venv 														# on the guest"
-echo " C. $ pip install -r /vagrant/requirements/local.txt'									# on the guest"
-echo " E. $ sudo -u postgres psq #Create the database, role, and grant priviliges   		# on the guest"
+echo " A. $ vagrant ssh 											# on the host, to access the guest machine"
+echo " B. $ mkvirtualenv $1_venv 								# on the guest"
+echo " C. $ pip install -r /vagrant/requirements/local.txt			# on the guest"
+echo " E. $ sudo -u postgres psq #Create the database, role, and grant priviliges, then \q to quit  # on the guest"
 echo ""
 echo "EACH TIME:"
-echo " F. $ sudo /etc/init.d/nginx restart													# on the guest"
-echo " G. $ sudo uwsgi --emperor /etc/uwsgi/vassals --uid vagrant --gid vagrant		   		# on the guest"
+echo " F. $ sudo /etc/init.d/nginx restart							# on the guest"
+echo " G. $ sudo uwsgi --emperor /etc/uwsgi/vassals --uid vagrant --gid vagrant		# on the guest"
 echo "			# on the guest"
 echo ""
 echo "Your site should now be available at: https://localhost:8443"
