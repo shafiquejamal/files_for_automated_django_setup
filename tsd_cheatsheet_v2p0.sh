@@ -35,7 +35,7 @@ pip freeze --local
 source `which virtualenvwrapper.sh` # https://stackoverflow.com/questions/7538628/virtualenvwrapper-functions-unavailable-in-shell-scripts
 echo "################ pip freeze --local AFTER source virtualenvwrapper"
 pip freeze --local
-cd ~/allfiles/htdocs
+# cd ~/allfiles/htdocs # Run this script from the directory in which you want your repository to reside.
 rm -R $1
 rmvirtualenv $1_venv
 mkvirtualenv $1_venv --no-site-packages
@@ -160,6 +160,11 @@ ls -al $1_repo/$1/
 echo "config:"
 ls -al $1_repo/$1/$1/
 
+echo "--------------- Vagrant up ------------------------------------------------------"
+cd $1_repo
+vagrant up
+echo "--------------- DONE: Vagrant up ------------------------------------------------------"
+
 
 echo ""
 echo "****************************************************************"
@@ -209,6 +214,12 @@ echo " A. $ vagrant ssh 											# on the host, to access the guest machine"
 echo " B. $ mkvirtualenv $1_venv 								# on the guest"
 echo " C. $ pip install -r /vagrant/requirements/local.txt			# on the guest"
 echo " E. $ sudo -u postgres psq #Create the database, role, and grant priviliges, then \q to quit  # on the guest"
+echo "	CREATE DATABASE $databases_default_name;"
+echo "	CREATE USER $databases_default_user WITH PASSWORD '$databases_default_password';"
+echo "	GRANT ALL PRIVILEGES ON DATABASE $databases_default_name to $databases_default_user;"
+echo "	\l"
+echo "	\du"
+echo "	\q"
 echo ""
 echo "EACH TIME:"
 echo " F. $ sudo /etc/init.d/nginx restart							# on the guest"
@@ -217,5 +228,6 @@ echo "			# on the guest"
 echo ""
 echo "Your site should now be available at: https://localhost:8443"
 echo ""
+
 
 
