@@ -57,6 +57,8 @@ django-admin.py startproject --template=https://github.com/twoscoops/django-twos
 echo "################ project created, now rename to top level to $1_repo"
 cp -r $1 $1_repo
 rm -R $1
+# make a media directory
+mkdir $1_repo/$1/media
 echo "################ Get rid of initial settings files and replace them with my own"
 rm $1_repo/$1/$1/settings/*.pyc 
 rm $1_repo/$1/$1/settings/base.py 
@@ -120,8 +122,9 @@ rm $1_repo/$1/templates/base.html
 wget -c -P $1_repo/$1/templates/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/base.html
 wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/Cheffile
 wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/Vagrantfile
-wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/mysite_uwsgi.ini
-wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/mysite_nginx.conf
+wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/uwsgi.ini
+wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/nginx.conf
+wget -c -P $1_repo/ https://raw.github.com/shafiquejamal/files_for_automated_django_setup/master/uwsgi_params
 echo "--------------- DONE: Copying some templates, vagrant file, cheffile  ----------------------------------------------------"
 
 echo "--------------- Use vagrant to spin up the local development server ------------------------------------------------------"

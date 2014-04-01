@@ -74,7 +74,7 @@ DATABASES = {
         #'NAME': 'db_name',
         #'USER': 'db_user',
         #'PASSWORD': 'db_password',
-        'HOST': '',
+        'HOST': '127.0.0.1',
         'PORT': '',
         'ATOMIC_REQUESTS' : True,
     }
@@ -282,3 +282,9 @@ SOUTH_TESTS_MIGRATE = False
 
 SESSION_COOKIE_SECURE   = True
 CSRF_COOKIE_SECURE      = True
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+    }
+}
