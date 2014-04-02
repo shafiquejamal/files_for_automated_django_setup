@@ -34,13 +34,13 @@ cd into the project repository:
     /etc/init.d/nginx restart
     sudo uwsgi --emperor /etc/uwsgi/vassals --uid vagrant --gid vagrant
 
-You should be able to access the server using the following url:
+You should be able to access the server on your host machine using the following url:
     
     https://localhost:8443
 
 ## Some aspects you might want to configure, after the install
 
-You access the server using the following url:
+You access the server on your host machine using the following url:
     
     https://localhost:8443
 
