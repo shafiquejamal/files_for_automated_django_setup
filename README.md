@@ -10,13 +10,14 @@ I took a lot from others. I am using the "two scoops of django" approach of Gree
 
 This script works well on OS X 10.9.2. If you're using a Linux distrubution, you might run into some problems. If so, please let me know.
 
-cd into the directory in which you want the project repository located:
+`cd` into the directory in which you want the project repository located:
 
     cd ~/
-execute the file (make sure you've changed the permissions to make it executable) tsd_cheatsheet_v2p0.sh from this directory:
+execute the file `tsd_cheatsheet_v2p0.sh` (make sure you've changed the permissions to make it executable)  from this directory (i.e. the one you just `cd`'d into):
+    
     /path/to/tsd_cheatsheet_v2p0.sh NAME_OF_YOUR_PROJECT
 
-The script will do its magic. At the end, there are instructions on what to do after. These are (change NAME_OF_YOUR_PROJECT to the name of your project):
+The script will do its magic. At the end, there are instructions on what to do after. These are (change NAME_OF_YOUR_PROJECT to the name of your project. Note that the name of the repository directory will end in `_repo`):
 
 cd into the project repository:
 
@@ -26,9 +27,9 @@ cd into the project repository:
     mkvirtualenv NAME_OF_YOUR_PROJECT_venv
     pip install -r /vagrant/requirements/local.txt
     sudo -u postgres psql # create the database as per the instructions that the script will output
-    \l 	# done in psql 
-    \du	# done in psql 
-    \q 	# done in psql 
+    \l  # done in psql 
+    \du # done in psql 
+    \q  # done in psql 
     /etc/init.d/nginx restart
     sudo uwsgi --emperor /etc/uwsgi/vassals --uid vagrant --gid vagrant
 
